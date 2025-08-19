@@ -4,35 +4,57 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    Management Account                           │
+│                    Management Account (Root)                    │
 │  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐ │
-│  │   Organizations │  │       SCPs      │  │   Cost & Billing│ │
+│  │   Organizations │  │  Organizations  │  │   AWS Budgets   │ │
+│  │                 │  │      (SCPs)     │  │                 │ │
 │  └─────────────────┘  └─────────────────┘  └─────────────────┘ │
 └─────────────────────────────────────────────────────────────────┘
                                 │
-                ┌───────────────┼───────────────┐
-                │               │               │
-┌───────────────▼──┐  ┌─────────▼──────┐  ┌────▼──────────────┐
-│  Security Account│  │ Logging Account│  │Infrastructure OU  │
-│                  │  │                │  │                   │
-│ • GuardDuty      │  │ • CloudTrail   │  │ ┌───────────────┐ │
-│ • Security Hub   │  │ • VPC Flow     │  │ │Shared Services│ │
-│ • Config Rules   │  │ • Log Archive  │  │ │   Account     │ │
-│ • Compliance     │  │ • Retention    │  │ │               │ │
-└──────────────────┘  └────────────────┘  │ │ • Bedrock     │ │
-                                          │ │ • IAM Roles   │ │
-┌─────────────────────────────────────────┐ │ • Monitoring  │ │
-│            Workloads OU                 │ │ • Networking  │ │
-│                                         │ └───────────────┘ │
-│ ┌─────────────────┐ ┌─────────────────┐ └───────────────────┘
-│ │ Workload Acct 1 │ │ Workload Acct 2 │
-│ │                 │ │                 │
-│ │ • Applications  │ │ • Applications  │
-│ │ • Cross-account │ │ • Cross-account │
-│ │   Bedrock access│ │   Bedrock access│
-│ └─────────────────┘ └─────────────────┘
-└─────────────────────────────────────────┘
+        ┌───────────────────────┼───────────────────────┐
+        │                       │                       │
+┌───────▼────────┐    ┌─────────▼──────────┐    ┌──────▼──────────┐
+│  Security OU   │    │    Logging OU      │    │  Foundation OU  │
+│                │    │                    │    │                 │
+│┌──────────────┐│    │┌──────────────────┐│    │┌───────────────┐│
+││Security Acct ││    ││ Logging Account  ││    ││Shared Services││
+││              ││    ││                  ││    ││   Account     ││
+││• GuardDuty   ││    ││ • CloudTrail     ││    ││               ││
+││• Security Hub││    ││ • VPC Flow Logs  ││    ││ • Bedrock     ││
+││• Config Rules││    ││ • Log Archive    ││    ││ • IAM Roles   ││
+││• Compliance  ││    ││ • Retention      ││    ││ • Monitoring  ││
+│└──────────────┘│    │└──────────────────┘│    ││ • Networking  ││
+└────────────────┘    └────────────────────┘    │└───────────────┘│
+                                                └─────────────────┘
+
+┌─────────────────────────────────────────────────────────────────┐
+│                        Workloads OU                            │
+│                                                                 │
+│ ┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐   │
+│ │ Workload Acct 1 │ │ Workload Acct 2 │ │ Workload Acct N │   │
+│ │                 │ │                 │ │                 │   │
+│ │ • Applications  │ │ • Applications  │ │ • Applications  │   │
+│ │ • Cross-account │ │ • Cross-account │ │ • Cross-account │   │
+│ │   Bedrock access│ │   Bedrock access│ │   Bedrock access│   │
+│ └─────────────────┘ └─────────────────┘ └─────────────────┘   │
+└─────────────────────────────────────────────────────────────────┘
 ```
+
+## Organizational Unit (OU) Structure
+
+The architecture uses a clear OU hierarchy for governance and policy management:
+
+### Core OUs (Direct under Management Account)
+- **Security OU**: Contains the Security Account for centralized security monitoring
+- **Logging OU**: Contains the Logging Account for audit trails and compliance
+- **Foundation OU**: Contains the Shared Services Account with Bedrock resources
+- **Workloads OU**: Contains all application-specific accounts
+
+### Key Benefits of This Structure
+- **Policy Inheritance**: SCPs applied at OU level cascade to all member accounts
+- **Governance**: Clear separation of concerns between security, logging, foundation services, and workloads
+- **Scalability**: Easy to add new accounts to appropriate OUs
+- **Compliance**: Audit-friendly structure with clear boundaries
 
 ## Key Security Features
 
