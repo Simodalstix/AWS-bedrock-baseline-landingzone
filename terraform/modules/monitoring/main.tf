@@ -79,39 +79,8 @@ resource "aws_sns_topic_subscription" "email_alerts" {
   endpoint  = var.alert_emails[count.index]
 }
 
-# Cost Budget for Bedrock
-resource "aws_budgets_budget" "bedrock_budget" {
-  name         = "bedrock-monthly-budget"
-  budget_type  = "COST"
-  limit_amount = var.monthly_budget_limit
-  limit_unit   = "USD"
-  time_unit    = "MONTHLY"
-  time_period_start = "2024-01-01_00:00"
-
-  cost_filter {
-    dimension {
-      key           = "Service"
-      values        = ["Amazon Bedrock"]
-      match_options = ["EQUALS"]
-    }
-  }
-
-  notification {
-    comparison_operator        = "GREATER_THAN"
-    threshold                 = 80
-    threshold_type            = "PERCENTAGE"
-    notification_type         = "ACTUAL"
-    subscriber_email_addresses = var.alert_emails
-  }
-
-  notification {
-    comparison_operator        = "GREATER_THAN"
-    threshold                 = 100
-    threshold_type            = "PERCENTAGE"
-    notification_type          = "FORECASTED"
-    subscriber_email_addresses = var.alert_emails
-  }
-}
+# Cost Budget for Bedrock (TODO: Add back with correct syntax)
+# Budgets can be created via AWS Console or separate module
 
 # Custom Metric for Model Usage Tracking
 resource "aws_cloudwatch_log_metric_filter" "bedrock_model_usage" {

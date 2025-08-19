@@ -14,11 +14,11 @@ variable "alert_emails" {
   type        = list(string)
 }
 
-variable "monthly_budget_limit" {
-  description = "Monthly budget limit for Bedrock in USD"
-  type        = string
-  default     = "100"
-}
+# variable "monthly_budget_limit" {
+#   description = "Monthly budget limit for Bedrock in USD"
+#   type        = string
+#   default     = "100"
+# }
 
 variable "bedrock_log_group_name" {
   description = "CloudWatch log group name for Bedrock logs"
