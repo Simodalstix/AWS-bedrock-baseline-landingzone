@@ -1,0 +1,9 @@
+# AWS Configuration
+aws_region = "us-east-1"
+bedrock_regions = ["us-east-1", "us-west-2"]
+
+# Account Email Addresses (must be unique)
+security_account_email        = "security@yourcompany.com"
+logging_account_email         = "logging@yourcompany.com"
+shared_services_account_email = "shared-services@yourcompany.com"
+workload_account_email        = "workload@yourcompany.com"
